@@ -2,10 +2,30 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
        http://www.springframework.org/schema/beans/spring-beans.xsd
        http://www.springframework.org/schema/context
-       http://www.springframework.org/schema/context/spring-context.xsd">
+       http://www.springframework.org/schema/context/spring-context.xsd
+       http://www.springframework.org/schema/aop
+       http://www.springframework.org/schema/aop/spring-aop.xsd">
     <!--<bean id = "userService" class="com.java.serviceImpl.UserServiceImpl"></bean>-->
-    <context:component-scan base-package="com.java.serviceImpl"/>
+    <context:component-scan base-package="com.java"/>
+
+    <aop:config>
+        <!-- 配置切入点  expression填写切入点表达式 -->
+        <!-- 切记写上execution前缀 刚刚就没写 启动报错！ -->
+        <aop:pointcut expression="execution(* com.java.serviceImpl..*.*(..))" id="pointcut"/>
+
+        <!-- 配置切面 切面是切入点和通知的结合 -->
+        <aop:aspect ref="myAdvise">
+            <!-- 指定名为before方法作为前置通知 -->
+            <aop:before method="before" pointcut-ref="pointcut"/>
+            <aop:around method="around" pointcut-ref="pointcut"/>
+            <aop:after-returning method="afterReturn" pointcut-ref="pointcut"/>
+            <aop:after-throwing method="afterException" pointcut-ref="pointcut"/>
+            <!--<aop:around method="around" pointcut-ref="pointcut"/>-->
+        </aop:aspect>
+
+    </aop:config>
 </beans>
